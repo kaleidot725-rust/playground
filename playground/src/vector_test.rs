@@ -1,4 +1,5 @@
 pub(crate) fn execute() {
+    println!("-- VECTOR TEST --");
     basic_sample();
     with_capacity_sample1();
     with_capacity_sample2();
