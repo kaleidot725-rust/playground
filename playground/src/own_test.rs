@@ -44,7 +44,7 @@ fn own_move_test() {
     // let u = s;
 
     // もし t と u の両方に s を渡したいのであれば clone する必要がある
-    let s2= vec!["udon".to_string(), "ramen".to_string(), "soba".to_string()];
+    let s2 = vec!["udon".to_string(), "ramen".to_string(), "soba".to_string()];
     let t2 = s2.clone();
     let u2 = s2.clone();
 
@@ -59,4 +59,63 @@ fn own_move_test() {
 }
 
 fn own_move_and_control_flow_test() {
+    // let x  = vec![10, 20, 30];
+    // if c {
+    //     f(x); ここで x を移動している
+    // } else {
+    //     g(x); ここで x を移動している
+    // }
+    //
+    // h(x); 必ず x は移動することになるので、ここで未初期化状態になる
+
+    // let x = vec![10, 20, 30];
+    // while f() {
+    //     g(x); 1週目で x が移動してしまうので2週目では未初期化状態になる
+    // }
+
+    // let mut x = vec![10, 20, 30];
+    // while f() {
+    //     g(x); ここで x を移動する
+    //     x = h(); ここで x に新しい値を入れるので 2 週目移行でも未初期化状にならない
+    // }
+    // e(x);
+
+    let mut v = Vec::new();
+    for i in 101..106 {
+        v.push(i.to_string());
+    }
+    let third = &v[2]; // 参照をつけなければインデックス参照できない
+    let fifth = &v[4]; // 参照をつけなければインデックス参照できない
+
+    let mut v2 = Vec::new();
+    for i in 101..106 {
+        v2.push(i.to_string());
+    }
+
+    let fifth = v2.pop().expect("vector empty!");
+    assert_eq!(fifth, "105");
+
+    let second = v2.swap_remove(1);
+    assert_eq!(second, "102");
+
+    let third = std::mem::replace(&mut v2[2], "substitue".to_string());
+    assert_eq!(third, "103");
+
+    assert_eq!(v2, vec!["101", "104", "substitute"]);
+
+    let v3 = vec!["liberte".to_string(), "egalite".to_string(), "fraternite".to_string()];
+    for mut s in v3 {
+        s.push('!');
+        println!("{}", s);
+    }
+
+    struct Person {
+        name: Option<String>,
+        birth: i32,
+    }
+    let mut composers = Vec::new();
+    composers.push(Person { name: Some("Palestrina".to_string()), birth: 1525 });
+    let first_name = std::mem::replace(&mut composers[0].name, None);
+    assert_eq!(first_name, Some("Palestrina".to_string()));
+    assert_eq!(composers[0].name, None);
 }
