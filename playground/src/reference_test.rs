@@ -2,6 +2,9 @@ use std::collections::HashMap;
 
 type Table = HashMap<String, Vec<String>>;
 
+static mut STASH: &i32 = &128;
+static mut WORTH_POINTING_AT: i32 = 1000;
+
 pub fn execute() {
     println!("-- REFERENCE TEST --");
     table();
@@ -11,6 +14,10 @@ pub fn execute() {
     reference();
     comparison();
     share_reference();
+    unsafe {
+        static_scope(&WORTH_POINTING_AT);
+    }
+    share_and_change();
 }
 
 fn table() {
@@ -96,6 +103,8 @@ fn reference() {
 }
 
 fn comparison() {
+    println!("-- comparison --");
+
     let x = 10;
     let y = 10;
 
@@ -114,6 +123,8 @@ fn comparison() {
 }
 
 fn share_reference() {
+    println!("-- share_reference --");
+
     fn factorial(n: usize) -> usize {
         (1..n+1).product()
     }
@@ -126,3 +137,77 @@ fn share_reference() {
     let r = &factorial(6);
     assert_eq!(r + &1009, 1729);
 }
+
+fn local_scope() {
+    println!("-- local_scope --");
+
+    // このコードだど X の依存期間が終了後にアクセスしてしまうのでコンパイルエラーになる
+    // {
+    //     let r;
+    //     {
+    //         let x = 1;
+    //         r = &x;
+    //     }
+    //     assert_eq!(*r, 1);
+    // }
+
+    // このコードであればXの生存期間が終了していないのでエラーにならない
+    {
+        let x =1;
+        {
+            let r = &x;
+            assert_eq!(*r, 1);
+        }
+    }
+}
+
+fn static_scope(p: &'static i32) {
+    println!("-- static_scope --");
+
+    unsafe {
+        STASH = p; // ここで渡される p の生存期間も static である必要がある
+    }
+}
+
+fn share_and_change() {
+    println!("-- share_and_change --");
+
+    // r の参照している v が未初期化になるのでエラーになる
+    // let v = vec![4, 8 , 19, 27, 34, 10];
+    // let r = &v;
+    // let aside = v;
+    // r[0];
+
+    // このように記述すると r の生存期間が終わってから aside に代入するので問題がでなくなる
+    let v = vec![4, 8, 19, 27, 34, 10];
+    {
+        let r = &v;
+        r[0];
+    }
+    let aside = v;
+}
+
+fn extend_test() {
+    println!("-- extend_test --");
+    let mut wave = Vec::new();
+    let head = vec![0.0, 1.0];
+    let tail = [0.0, -1.0];
+
+    extend(&mut wave, &head);
+    extend(&mut wave, &tail);
+
+    assert_eq!(wave, vec![0.0, 1.0, 0.0, -1.0]);
+
+    // Vecを変更しながら読み出す処理はエラーになる
+    // なぜなら可変参照と共有参照を同時に取得できないから
+    // extend(&mut wave, &wave);
+    // assert_eq!(wave, vec![0.0, 1.0, 0.0, -1.0, 0.0, 1.0, 0.0, -1.0]);
+}
+
+fn extend(vec: &mut Vec<f64>, slice: &[f64]) {
+    for elt in slice {
+        vec.push(*elt)
+    }
+}
+
+
