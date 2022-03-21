@@ -6,6 +6,7 @@ mod own_test;
 mod copy_test;
 mod rc_and_arc_test;
 mod reference_test;
+mod formula_test;
 
 fn main() {
     array_test::execute();
@@ -16,4 +17,5 @@ fn main() {
     copy_test::execute();
     rc_and_arc_test::execute();
     reference_test::execute();
+    formula_test::execute();
 }
