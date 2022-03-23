@@ -7,6 +7,7 @@ mod copy_test;
 mod rc_and_arc_test;
 mod reference_test;
 mod formula_test;
+mod panic_test;
 
 fn main() {
     array_test::execute();
@@ -18,4 +19,5 @@ fn main() {
     rc_and_arc_test::execute();
     reference_test::execute();
     formula_test::execute();
+    panic_test::execute();
 }
