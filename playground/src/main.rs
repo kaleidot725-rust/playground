@@ -8,6 +8,7 @@ mod rc_and_arc_test;
 mod reference_test;
 mod formula_test;
 mod panic_test;
+mod module_test;
 
 fn main() {
     array_test::execute();
