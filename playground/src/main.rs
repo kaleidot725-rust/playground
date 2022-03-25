@@ -9,6 +9,7 @@ mod reference_test;
 mod formula_test;
 mod panic_test;
 mod module_test;
+mod struct_test;
 
 fn main() {
     array_test::execute();
@@ -21,4 +22,5 @@ fn main() {
     reference_test::execute();
     formula_test::execute();
     panic_test::execute();
+    struct_test::execute();
 }

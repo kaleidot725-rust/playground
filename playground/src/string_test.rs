@@ -1,4 +1,4 @@
-pub(crate) fn execute() {
+pub fn execute() {
     println!("-- STRING TEST --");
 
     // 文字列リテラル
