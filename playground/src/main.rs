@@ -10,6 +10,7 @@ mod formula_test;
 mod panic_test;
 mod module_test;
 mod struct_test;
+mod enum_test;
 
 fn main() {
     array_test::execute();
