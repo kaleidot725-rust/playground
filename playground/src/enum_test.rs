@@ -1,4 +1,6 @@
 use std::collections::HashMap;
+use std::fmt::format;
+
 use crate::enum_test::Ordering::{Equal, Greater, Less};
 use crate::enum_test::Shape::{Cuboid, Sphere};
 
@@ -64,29 +66,68 @@ enum Json {
     Number(f64),
     String(String),
     Array(Vec<Json>),
-    Object(Box<HashMap<String, Json>>)
+    Object(Box<HashMap<String, Json>>),
 }
 
 // ジェネリック列挙型も使える
 enum Option<T> {
     None,
-    Some(T)
+    Some(T),
 }
 
 enum Result<T, E> {
     Ok(T),
-    Err(E)
+    Err(E),
 }
 
 enum BinaryTree<T> {
     Empty,
-    NotEmpty(Box<TreeNode<T>>)
+    NotEmpty(Box<TreeNode<T>>),
 }
 
 struct TreeNode<T> {
     element: T,
     left: BinaryTree<T>,
-    right: BInaryTree<T>
+    right: BinaryTree<T>,
+}
+
+// fn rough_time_to_english(rt: RoughTime) -> String {
+//     match rt {
+//         RoughTime::InThePast(units, count) => format!("{} {} ago", count, units.plural()),
+//         RoughTime::JustNow => format!("just now"),
+//         RoughTime::InTheFuture(unit, 1) => format!("a {} from now", unit.singular()),
+//         RoughTime::InTheFuture(units, count) => format!("{} {} from now", count, units.plural()),
+//     }
+// }
+
+fn rabbit_count_to_english() {
+    let rabbit_count = 10;
+    match rabbit_count {
+        0 => {}
+        1 => println!("A rabbit is nosing around in the clover."),
+        n => println!("There are {} rabbits hopping about in the meadow", n),
+    }
+}
+
+fn describe_point(x: i32, y: i32) -> &'static str {
+    use std::cmp::Ordering::*;
+    match (x.cmp(&0), y.cmp(&0)) {
+        (Equal, Equal) => "at the origin",
+        (_, Equal) => "on the x axis",
+        (Equal, _) => "on the y axis",
+        (Greater, Greater) => "in the first quadrant",
+        (Less, Greater) => "in the second quadrant",
+        _ => "somewhere else"
+    }
+}
+
+fn greet_people(names: &[&str]) {
+    match names {
+        [] => { println!("Hello, nobody") }
+        [a] => { println!("Hello, {}.", a) }
+        [a, b] => { println!("Hello, {} and {}.", a, b) }
+        [a, .., b] => { println!("Hello, everyone from {} to {}.", a, b) }
+    }
 }
 
 pub fn execute() {
